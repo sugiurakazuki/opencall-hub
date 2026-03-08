@@ -10,6 +10,20 @@ const DB_PATH = path.join(__dirname, '../database.db');
 export const app = express();
 app.use(express.json());
 
+// Allow frontend dev server to call this API from a different origin.
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(204);
+    return;
+  }
+
+  next();
+});
+
 app.get('/api/grants', (req, res) => {
   const db = new Database(DB_PATH);
   try {
