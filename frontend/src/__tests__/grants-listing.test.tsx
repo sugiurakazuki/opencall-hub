@@ -27,6 +27,9 @@ describe('Grant Listing Page', () => {
       expect(screen.getByText('Science Grant')).toBeDefined();
     });
 
+    // Should display deadline info (including countdown)
+    expect(screen.getAllByText(/days left/i)).toHaveLength(2);
+
     // Should have a search input
     expect(screen.getByPlaceholderText(/Search grants/i)).toBeDefined();
   });

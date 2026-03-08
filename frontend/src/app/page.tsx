@@ -37,6 +37,25 @@ export default function Home() {
     grant.category?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const getDaysRemaining = (deadline: string) => {
+    const today = new Date();
+    const deadlineDate = new Date(deadline);
+    const diffTime = deadlineDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const renderDeadline = (deadline: string) => {
+    const daysLeft = getDaysRemaining(deadline);
+    if (daysLeft < 0) {
+      return `${deadline} (Deadline passed)`;
+    } else if (daysLeft === 0) {
+      return `${deadline} (Ends today!)`;
+    } else {
+      return `${deadline} (${daysLeft} days left)`;
+    }
+  };
+
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>Art Grants & Competitions</h1>
@@ -59,7 +78,7 @@ export default function Home() {
             <div key={grant.id} style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '4px' }}>
               <h2>{grant.title}</h2>
               <p><strong>Category:</strong> {grant.category}</p>
-              <p><strong>Deadline:</strong> {grant.deadline}</p>
+              <p><strong>Deadline:</strong> {renderDeadline(grant.deadline)}</p>
             </div>
           ))}
           {filteredGrants.length === 0 && <p>No grants found.</p>}
