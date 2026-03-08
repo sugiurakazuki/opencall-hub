@@ -2,7 +2,7 @@
 
 ## Phase 1: Foundation and Scaffolding
 - [x] Task: Scaffold Next.js frontend and Express backend with TypeScript. [7305344]
-- [~] Task: Set up SQLite database with initial schema for Grants and Users.
+- [x] Task: Set up SQLite database with initial schema for Grants and Users. [07f9cf1]
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation and Scaffolding' (Protocol in workflow.md)
 
 ## Phase 2: Backend API Development
