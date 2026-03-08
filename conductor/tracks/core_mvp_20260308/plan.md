@@ -23,11 +23,11 @@
     - [x] Implement Feature [c0ccbbe]
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Frontend Search and Listing' (Protocol in workflow.md) [84ad766]
 
-## Phase 4: User Dashboard
+## Phase 4: User Dashboard [checkpoint: 935a58a]
 - [x] Task: Create a User Dashboard page to display saved grants. [74fcff1]
     - [x] Write Tests [74fcff1]
     - [x] Implement Feature [74fcff1]
 - [x] Task: Implement "Save/Unsave" toggle on grant cards. [609156d]
     - [x] Write Tests [609156d]
     - [x] Implement Feature [609156d]
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: User Dashboard' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: User Dashboard' (Protocol in workflow.md) [935a58a]
