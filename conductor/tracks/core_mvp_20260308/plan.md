@@ -5,14 +5,14 @@
 - [x] Task: Set up SQLite database with initial schema for Grants and Users. [07f9cf1]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation and Scaffolding' (Protocol in workflow.md) [b7ef0b8]
 
-## Phase 2: Backend API Development
+## Phase 2: Backend API Development [checkpoint: 19c8239]
 - [x] Task: Implement GET /api/grants with filtering by category and sorting by deadline. [b10343f]
     - [x] Write Tests [b10343f]
     - [x] Implement Feature [b10343f]
 - [x] Task: Implement POST /api/users/saved-grants to bookmark an opportunity. [388c083]
     - [x] Write Tests [388c083]
     - [x] Implement Feature [388c083]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Backend API Development' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Backend API Development' (Protocol in workflow.md) [19c8239]
 
 ## Phase 3: Frontend Search and Listing
 - [ ] Task: Build the Grant Listing page with search and category filters.
