@@ -9,9 +9,9 @@
 - [x] Task: Implement GET /api/grants with filtering by category and sorting by deadline. [b10343f]
     - [x] Write Tests [b10343f]
     - [x] Implement Feature [b10343f]
-- [~] Task: Implement POST /api/users/saved-grants to bookmark an opportunity.
-    - [~] Write Tests
-    - [ ] Implement Feature
+- [x] Task: Implement POST /api/users/saved-grants to bookmark an opportunity. [388c083]
+    - [x] Write Tests [388c083]
+    - [x] Implement Feature [388c083]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Backend API Development' (Protocol in workflow.md)
 
 ## Phase 3: Frontend Search and Listing
