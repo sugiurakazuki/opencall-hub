@@ -30,3 +30,26 @@ app.get('/api/grants', (req, res) => {
 
   res.json(grants);
 });
+
+app.post('/api/users/saved-grants', (req, res) => {
+  const { user_id, grant_id } = req.body;
+
+  if (!user_id || !grant_id) {
+    res.status(400).json({ error: 'user_id and grant_id are required' });
+    return;
+  }
+
+  const db = new Database(DB_PATH);
+  try {
+    db.prepare("INSERT INTO saved_grants (user_id, grant_id) VALUES (?, ?)").run(user_id, grant_id);
+    res.status(201).json({ message: 'Grant saved successfully' });
+  } catch (error: any) {
+    if (error.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
+      res.status(409).json({ error: 'Grant already saved' });
+    } else {
+      res.status(500).json({ error: 'Failed to save grant' });
+    }
+  } finally {
+    db.close();
+  }
+});

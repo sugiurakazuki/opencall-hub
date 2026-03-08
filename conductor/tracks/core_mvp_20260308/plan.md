@@ -6,11 +6,11 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation and Scaffolding' (Protocol in workflow.md) [b7ef0b8]
 
 ## Phase 2: Backend API Development
-- [~] Task: Implement GET /api/grants with filtering by category and sorting by deadline.
+- [x] Task: Implement GET /api/grants with filtering by category and sorting by deadline. [b10343f]
+    - [x] Write Tests [b10343f]
+    - [x] Implement Feature [b10343f]
+- [~] Task: Implement POST /api/users/saved-grants to bookmark an opportunity.
     - [~] Write Tests
-    - [ ] Implement Feature
-- [ ] Task: Implement POST /api/users/saved-grants to bookmark an opportunity.
-    - [ ] Write Tests
     - [ ] Implement Feature
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Backend API Development' (Protocol in workflow.md)
 

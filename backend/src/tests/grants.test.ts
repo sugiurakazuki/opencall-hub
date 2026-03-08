@@ -15,6 +15,7 @@ describe('GET /api/grants', () => {
     db = new Database(DB_PATH);
     // Clear and seed
     db.exec(`
+      DELETE FROM saved_grants;
       DELETE FROM grants;
       INSERT INTO grants (title, category, deadline) VALUES ('Grant 1', 'Art', '2026-05-01');
       INSERT INTO grants (title, category, deadline) VALUES ('Grant 2', 'Science', '2026-04-01');
