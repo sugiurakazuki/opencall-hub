@@ -32,5 +32,14 @@ describe('Grant Listing Page', () => {
 
     // Should have a search input
     expect(screen.getByPlaceholderText(/Search grants/i)).toBeDefined();
+
+    // Should have a save button for unsaved grants
+    const saveButtons = screen.getAllByRole('button', { name: /Save/i });
+    expect(saveButtons).toHaveLength(2);
+
+    // Mock successful POST for saving
+    (fetch as any).mockResolvedValueOnce({ ok: true });
+    fireEvent.click(saveButtons[0]);
+    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/users/saved-grants'), expect.objectContaining({ method: 'POST' }));
   });
 });

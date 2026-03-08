@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react';
 interface Grant {
   id: number;
   title: string;
-  description: string;
   category: string;
   deadline: string;
+  is_saved?: number;
 }
 
 export default function Home() {
@@ -15,22 +15,49 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchGrants() {
-      try {
-        const response = await fetch('http://localhost:8080/api/grants');
-        if (response.ok) {
-          const data = await response.json();
-          setGrants(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch grants:', error);
-      } finally {
-        setLoading(false);
+  // Hardcoded user_id 1 for MVP
+  const USER_ID = 1;
+
+  async function fetchGrants() {
+    try {
+      const response = await fetch(`http://localhost:8080/api/grants?user_id=${USER_ID}`);
+      if (response.ok) {
+        const data = await response.json();
+        setGrants(data);
       }
+    } catch (error) {
+      console.error('Failed to fetch grants:', error);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchGrants();
   }, []);
+
+  const toggleSave = async (grantId: number, isSaved: boolean) => {
+    try {
+      const method = isSaved ? 'DELETE' : 'POST';
+      const url = isSaved 
+        ? `http://localhost:8080/api/users/${USER_ID}/saved-grants/${grantId}`
+        : `http://localhost:8080/api/users/saved-grants`;
+      
+      const body = isSaved ? null : JSON.stringify({ user_id: USER_ID, grant_id: grantId });
+      
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body
+      });
+
+      if (response.ok) {
+        fetchGrants(); // Refresh
+      }
+    } catch (error) {
+      console.error('Failed to toggle save:', error);
+    }
+  };
 
   const filteredGrants = grants.filter(grant => 
     grant.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -58,7 +85,10 @@ export default function Home() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Art Grants & Competitions</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1>Art Grants & Competitions</h1>
+        <a href="/dashboard">My Saved Grants</a>
+      </div>
       
       <div style={{ marginBottom: '2rem' }}>
         <input
@@ -75,10 +105,23 @@ export default function Home() {
       ) : (
         <div style={{ display: 'grid', gap: '1rem' }}>
           {filteredGrants.map(grant => (
-            <div key={grant.id} style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '4px' }}>
+            <div key={grant.id} style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '4px', position: 'relative' }}>
               <h2>{grant.title}</h2>
               <p><strong>Category:</strong> {grant.category}</p>
               <p><strong>Deadline:</strong> {renderDeadline(grant.deadline)}</p>
+              <button 
+                onClick={() => toggleSave(grant.id, !!grant.is_saved)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  backgroundColor: grant.is_saved ? '#ff4d4f' : '#1890ff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                {grant.is_saved ? 'Unsave' : 'Save'}
+              </button>
             </div>
           ))}
           {filteredGrants.length === 0 && <p>No grants found.</p>}

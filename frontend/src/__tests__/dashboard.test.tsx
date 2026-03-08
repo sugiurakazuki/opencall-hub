@@ -1,5 +1,5 @@
 import { expect, test, vi, beforeEach, describe } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import DashboardPage from '../app/dashboard/page';
 
 // Mock fetch
@@ -29,5 +29,14 @@ describe('User Dashboard Page', () => {
     });
 
     expect(screen.getByText(/Your Saved Grants/i)).toBeDefined();
+
+    // Should have an unsave button
+    const unsaveButton = screen.getByRole('button', { name: /Unsave/i });
+    expect(unsaveButton).toBeDefined();
+
+    // Mock successful DELETE for unsaving
+    (fetch as any).mockResolvedValueOnce({ ok: true });
+    fireEvent.click(unsaveButton);
+    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/users/1/saved-grants/1'), expect.objectContaining({ method: 'DELETE' }));
   });
 });

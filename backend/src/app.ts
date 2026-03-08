@@ -12,18 +12,23 @@ app.use(express.json());
 
 app.get('/api/grants', (req, res) => {
   const db = new Database(DB_PATH);
-  const { category } = req.query;
+  const { category, user_id } = req.query;
 
-  let query = "SELECT * FROM grants";
-  const params: any[] = [];
+  let query = `
+    SELECT g.*, 
+    CASE WHEN sg.user_id IS NOT NULL THEN 1 ELSE 0 END as is_saved
+    FROM grants g
+    LEFT JOIN saved_grants sg ON g.id = sg.grant_id AND sg.user_id = ?
+  `;
+  const params: any[] = [user_id || null];
 
   if (category) {
-    query += " WHERE category = ?";
+    query += " WHERE g.category = ?";
     params.push(category);
   }
 
   // Sort by deadline by default
-  query += " ORDER BY deadline ASC";
+  query += " ORDER BY g.deadline ASC";
 
   const grants = db.prepare(query).all(...params);
   db.close();
@@ -76,4 +81,26 @@ app.get('/api/users/:id/saved-grants', (req, res) => {
   db.close();
 
   res.json(savedGrants);
+});
+
+app.delete('/api/users/:id/saved-grants/:grant_id', (req, res) => {
+  const { id, grant_id } = req.params;
+  const db = new Database(DB_PATH);
+
+  // Check if user exists
+  const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+  if (!user) {
+    db.close();
+    res.status(404).json({ error: 'User not found' });
+    return;
+  }
+
+  try {
+    db.prepare("DELETE FROM saved_grants WHERE user_id = ? AND grant_id = ?").run(id, grant_id);
+    res.json({ message: 'Grant unsaved successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to unsave grant' });
+  } finally {
+    db.close();
+  }
 });
