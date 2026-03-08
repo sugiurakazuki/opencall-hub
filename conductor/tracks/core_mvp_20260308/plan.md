@@ -24,8 +24,8 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Frontend Search and Listing' (Protocol in workflow.md) [84ad766]
 
 ## Phase 4: User Dashboard
-- [ ] Task: Create a User Dashboard page to display saved grants.
-    - [ ] Write Tests
+- [~] Task: Create a User Dashboard page to display saved grants.
+    - [~] Write Tests
     - [ ] Implement Feature
 - [ ] Task: Implement "Save/Unsave" toggle on grant cards.
     - [ ] Write Tests

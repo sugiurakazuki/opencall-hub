@@ -53,3 +53,27 @@ app.post('/api/users/saved-grants', (req, res) => {
     db.close();
   }
 });
+
+app.get('/api/users/:id/saved-grants', (req, res) => {
+  const { id } = req.params;
+  const db = new Database(DB_PATH);
+
+  // Check if user exists
+  const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+  if (!user) {
+    db.close();
+    res.status(404).json({ error: 'User not found' });
+    return;
+  }
+
+  const query = `
+    SELECT g.* FROM grants g
+    JOIN saved_grants sg ON g.id = grant_id
+    WHERE sg.user_id = ?
+    ORDER BY g.deadline ASC
+  `;
+  const savedGrants = db.prepare(query).all(id);
+  db.close();
+
+  res.json(savedGrants);
+});
