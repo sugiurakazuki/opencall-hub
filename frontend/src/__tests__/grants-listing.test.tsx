@@ -1,0 +1,33 @@
+import { expect, test, vi, beforeEach, describe } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import Page from '../app/page';
+
+// Mock fetch
+global.fetch = vi.fn();
+
+describe('Grant Listing Page', () => {
+  beforeEach(() => {
+    (fetch as any).mockClear();
+  });
+
+  test('renders grant listing and filters', async () => {
+    (fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => [
+        { id: 1, title: 'Art Grant', category: 'Art', deadline: '2026-05-01' },
+        { id: 2, title: 'Science Grant', category: 'Science', deadline: '2026-04-01' },
+      ],
+    });
+
+    render(<Page />);
+
+    // Should display grants after loading
+    await waitFor(() => {
+      expect(screen.getByText('Art Grant')).toBeDefined();
+      expect(screen.getByText('Science Grant')).toBeDefined();
+    });
+
+    // Should have a search input
+    expect(screen.getByPlaceholderText(/Search grants/i)).toBeDefined();
+  });
+});

@@ -1,66 +1,70 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface Grant {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  deadline: string;
+}
 
 export default function Home() {
+  const [grants, setGrants] = useState<Grant[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchGrants() {
+      try {
+        const response = await fetch('http://localhost:8080/api/grants');
+        if (response.ok) {
+          const data = await response.json();
+          setGrants(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch grants:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchGrants();
+  }, []);
+
+  const filteredGrants = grants.filter(grant => 
+    grant.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    grant.category?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <h1>Art Grants & Competitions</h1>
+      
+      <div style={{ marginBottom: '2rem' }}>
+        <input
+          type="text"
+          placeholder="Search grants..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ padding: '0.5rem', width: '300px' }}
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+      </div>
+
+      {loading ? (
+        <p>Loading grants...</p>
+      ) : (
+        <div style={{ display: 'grid', gap: '1rem' }}>
+          {filteredGrants.map(grant => (
+            <div key={grant.id} style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '4px' }}>
+              <h2>{grant.title}</h2>
+              <p><strong>Category:</strong> {grant.category}</p>
+              <p><strong>Deadline:</strong> {grant.deadline}</p>
+            </div>
+          ))}
+          {filteredGrants.length === 0 && <p>No grants found.</p>}
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      )}
     </div>
   );
 }

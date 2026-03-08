@@ -15,8 +15,8 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Backend API Development' (Protocol in workflow.md) [19c8239]
 
 ## Phase 3: Frontend Search and Listing
-- [ ] Task: Build the Grant Listing page with search and category filters.
-    - [ ] Write Tests
+- [~] Task: Build the Grant Listing page with search and category filters.
+    - [~] Write Tests
     - [ ] Implement Feature
 - [ ] Task: Implement deadline countdowns and clear date displays on grant cards.
     - [ ] Write Tests
