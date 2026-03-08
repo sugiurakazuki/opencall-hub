@@ -1,5 +1,5 @@
-import express from 'express';
-const app = express();
+import { app } from './app.js';
+
 const port = 8080;
 
 app.get('/', (req, res) => {
