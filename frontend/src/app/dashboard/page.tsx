@@ -9,6 +9,8 @@ interface Grant {
   deadline: string;
 }
 
+const API_BASE_URL = 'http://localhost:8080/api';
+
 export default function Dashboard() {
   const [savedGrants, setSavedGrants] = useState<Grant[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ export default function Dashboard() {
 
   async function fetchSavedGrants() {
     try {
-      const response = await fetch(`http://localhost:8080/api/users/${USER_ID}/saved-grants`);
+      const response = await fetch(`${API_BASE_URL}/users/${USER_ID}/saved-grants`);
       if (response.ok) {
         const data = await response.json();
         setSavedGrants(data);
@@ -36,7 +38,7 @@ export default function Dashboard() {
 
   const unsaveGrant = async (grantId: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/users/${USER_ID}/saved-grants/${grantId}`, {
+      const response = await fetch(`${API_BASE_URL}/users/${USER_ID}/saved-grants/${grantId}`, {
         method: 'DELETE',
       });
 
@@ -52,7 +54,7 @@ export default function Dashboard() {
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>Your Saved Grants</h1>
-        <a href="/">Back to all grants</a>
+        <a href='/'>Back to all grants</a>
       </div>
       
       {loading ? (

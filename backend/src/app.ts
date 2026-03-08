@@ -12,28 +12,32 @@ app.use(express.json());
 
 app.get('/api/grants', (req, res) => {
   const db = new Database(DB_PATH);
-  const { category, user_id } = req.query;
+  try {
+    const { category, user_id } = req.query;
 
-  let query = `
-    SELECT g.*, 
-    CASE WHEN sg.user_id IS NOT NULL THEN 1 ELSE 0 END as is_saved
-    FROM grants g
-    LEFT JOIN saved_grants sg ON g.id = sg.grant_id AND sg.user_id = ?
-  `;
-  const params: any[] = [user_id || null];
+    let query = `
+      SELECT g.*, 
+      CASE WHEN sg.user_id IS NOT NULL THEN 1 ELSE 0 END as is_saved
+      FROM grants g
+      LEFT JOIN saved_grants sg ON g.id = sg.grant_id AND sg.user_id = ?
+    `;
+    const params: any[] = [user_id || null];
 
-  if (category) {
-    query += " WHERE g.category = ?";
-    params.push(category);
+    if (category) {
+      query += ' WHERE g.category = ?';
+      params.push(category);
+    }
+
+    // Sort by deadline by default
+    query += ' ORDER BY g.deadline ASC';
+
+    const grants = db.prepare(query).all(...params);
+    res.json(grants);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch grants' });
+  } finally {
+    db.close();
   }
-
-  // Sort by deadline by default
-  query += " ORDER BY g.deadline ASC";
-
-  const grants = db.prepare(query).all(...params);
-  db.close();
-
-  res.json(grants);
 });
 
 app.post('/api/users/saved-grants', (req, res) => {
@@ -46,7 +50,7 @@ app.post('/api/users/saved-grants', (req, res) => {
 
   const db = new Database(DB_PATH);
   try {
-    db.prepare("INSERT INTO saved_grants (user_id, grant_id) VALUES (?, ?)").run(user_id, grant_id);
+    db.prepare('INSERT INTO saved_grants (user_id, grant_id) VALUES (?, ?)').run(user_id, grant_id);
     res.status(201).json({ message: 'Grant saved successfully' });
   } catch (error: any) {
     if (error.code === 'SQLITE_CONSTRAINT_PRIMARYKEY') {
@@ -63,40 +67,42 @@ app.get('/api/users/:id/saved-grants', (req, res) => {
   const { id } = req.params;
   const db = new Database(DB_PATH);
 
-  // Check if user exists
-  const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
-  if (!user) {
+  try {
+    // Check if user exists
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    const query = `
+      SELECT g.* FROM grants g
+      JOIN saved_grants sg ON g.id = grant_id
+      WHERE sg.user_id = ?
+      ORDER BY g.deadline ASC
+    `;
+    const savedGrants = db.prepare(query).all(id);
+    res.json(savedGrants);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch saved grants' });
+  } finally {
     db.close();
-    res.status(404).json({ error: 'User not found' });
-    return;
   }
-
-  const query = `
-    SELECT g.* FROM grants g
-    JOIN saved_grants sg ON g.id = grant_id
-    WHERE sg.user_id = ?
-    ORDER BY g.deadline ASC
-  `;
-  const savedGrants = db.prepare(query).all(id);
-  db.close();
-
-  res.json(savedGrants);
 });
 
 app.delete('/api/users/:id/saved-grants/:grant_id', (req, res) => {
   const { id, grant_id } = req.params;
   const db = new Database(DB_PATH);
 
-  // Check if user exists
-  const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
-  if (!user) {
-    db.close();
-    res.status(404).json({ error: 'User not found' });
-    return;
-  }
-
   try {
-    db.prepare("DELETE FROM saved_grants WHERE user_id = ? AND grant_id = ?").run(id, grant_id);
+    // Check if user exists
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    db.prepare('DELETE FROM saved_grants WHERE user_id = ? AND grant_id = ?').run(id, grant_id);
     res.json({ message: 'Grant unsaved successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to unsave grant' });

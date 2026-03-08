@@ -10,6 +10,8 @@ interface Grant {
   is_saved?: number;
 }
 
+const API_BASE_URL = 'http://localhost:8080/api';
+
 export default function Home() {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,7 +22,7 @@ export default function Home() {
 
   async function fetchGrants() {
     try {
-      const response = await fetch(`http://localhost:8080/api/grants?user_id=${USER_ID}`);
+      const response = await fetch(`${API_BASE_URL}/grants?user_id=${USER_ID}`);
       if (response.ok) {
         const data = await response.json();
         setGrants(data);
@@ -40,8 +42,8 @@ export default function Home() {
     try {
       const method = isSaved ? 'DELETE' : 'POST';
       const url = isSaved 
-        ? `http://localhost:8080/api/users/${USER_ID}/saved-grants/${grantId}`
-        : `http://localhost:8080/api/users/saved-grants`;
+        ? `${API_BASE_URL}/users/${USER_ID}/saved-grants/${grantId}`
+        : `${API_BASE_URL}/users/saved-grants`;
       
       const body = isSaved ? null : JSON.stringify({ user_id: USER_ID, grant_id: grantId });
       
@@ -87,13 +89,13 @@ export default function Home() {
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>Art Grants & Competitions</h1>
-        <a href="/dashboard">My Saved Grants</a>
+        <a href='/dashboard'>My Saved Grants</a>
       </div>
       
       <div style={{ marginBottom: '2rem' }}>
         <input
-          type="text"
-          placeholder="Search grants..."
+          type='text'
+          placeholder='Search grants...'
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           style={{ padding: '0.5rem', width: '300px' }}
