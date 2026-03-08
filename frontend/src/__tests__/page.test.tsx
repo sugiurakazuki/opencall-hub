@@ -4,6 +4,6 @@ import Page from '../app/page';
 
 test('Page renders correctly', () => {
   render(<Page />);
-  // Check for any text that exists on the default Next.js page
-  expect(screen.getByText(/Documentation/i)).toBeDefined();
+  // Check for the main heading
+  expect(screen.getByText(/Art Grants & Competitions/i)).toBeDefined();
 });
