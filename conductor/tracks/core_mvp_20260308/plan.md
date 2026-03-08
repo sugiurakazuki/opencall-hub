@@ -14,14 +14,14 @@
     - [x] Implement Feature [388c083]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Backend API Development' (Protocol in workflow.md) [19c8239]
 
-## Phase 3: Frontend Search and Listing
+## Phase 3: Frontend Search and Listing [checkpoint: 84ad766]
 - [x] Task: Build the Grant Listing page with search and category filters. [ac51614]
     - [x] Write Tests [ac51614]
     - [x] Implement Feature [ac51614]
 - [x] Task: Implement deadline countdowns and clear date displays on grant cards. [c0ccbbe]
     - [x] Write Tests [c0ccbbe]
     - [x] Implement Feature [c0ccbbe]
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Frontend Search and Listing' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Frontend Search and Listing' (Protocol in workflow.md) [84ad766]
 
 ## Phase 4: User Dashboard
 - [ ] Task: Create a User Dashboard page to display saved grants.
